@@ -12,7 +12,8 @@ Utilizada por [4Geeks.com](https://4geeks.com/) y los estudiantes de [4Geeks Aca
 
 2. Crea un archivo .env basado en el .env.example escribiendo `$ cp .env.example .env`
 
-3. ¡Comienza a programar! y el servidor de desarrollo de vite con recarga en vivo escribiendo: `$ npm run start`
+3. ¡Comienza a programar! y el servidor de desarrollo de vite con recarga en vivo escribiendo: `$ npm run start
+`
 
 ### Estilos
 

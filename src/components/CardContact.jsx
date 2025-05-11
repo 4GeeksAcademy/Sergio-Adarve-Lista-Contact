@@ -1,62 +1,44 @@
-import React from "react";
-import { Link } from 'react-router-dom'
-import { useContext } from 'react'
-import { Context } from '../store/appContext'
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 const CardContact = ({ contact }) => {
-    const { store, actions } = useContext(Context)
+    const { actions } = useContext(Context);
+    const navigate = useNavigate();
 
-    const eliminarContacto = () => {
-        console.log(contact)
+    const handleDelete = () => {
         actions.deleteContact(contact.id);
     };
 
     return (
-        <li className="list-group-item d-flex justify-content-center">
-            <div className="d-flex align-items-center w-75">
-                <div className="col-md-3 d-flex justify-content-center">
-                    <img
-                        className="rounded-circle"
-                        src="https://picsum.photos/170/170/"
-                        alt="Contact"
-
+        <div className="card mb-3 shadow">
+            <div className="row g-0">
+                <div className="col-md-2 d-flex justify-content-center align-items-center">
+                    <img 
+                        src="https://via.placeholder.com/80" 
+                        className="img-fluid rounded-circle m-2"
+                        alt="contact avatar"
                     />
                 </div>
-                <div className="col-md-6">
-                    <h5 className="card-title mb-1">{contact.name}</h5>
-                    <p className="card-text mb-1">{contact.address}</p>
-                    <p className="card-text mb-1">{contact.phone}</p>
-                    <p className="card-text mb-1">{contact.email}</p>
-                </div>
-                <div className="col-md-3 d-flex justify-content-end">
-                    <Link to={"/editContact/" + contact.id} className="btn btn-link p-0 me-3">
-                        <i className="fa fa-eraser"></i>
-                    </Link>
-                    
-                    <button type="button" data-bs-toggle="modal" data-bs-target={"#delete-contact-" + contact.id} >
-                        <i className="fa fa-trash fa-lg"></i>
-                    </button>
-
-                    <div className="modal fade" id={"delete-contact-" + contact.id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Are you sure?</h1>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div className="modal-body">
-                                    If you delete this thing the etire universe will go down!
-                                </div>
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Oh no!</button>
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={eliminarContacto}>Yes baby!</button>
-                                </div>
-                            </div>
-                        </div>
+                <div className="col-md-8">
+                    <div className="card-body">
+                        <h5 className="card-title">{contact.name}</h5>
+                        <p className="card-text mb-1"><i className="fa fa-envelope me-2"></i>{contact.email}</p>
+                        <p className="card-text mb-1"><i className="fa fa-phone me-2"></i>{contact.phone}</p>
+                        <p className="card-text"><i className="fa fa-location-dot me-2"></i>{contact.address}</p>
                     </div>
                 </div>
+                <div className="col-md-2 d-flex flex-column justify-content-center align-items-center gap-2">
+                    <button className="btn btn-outline-primary" onClick={() => navigate(`/addContact/${contact.id}`)}>
+                        <i className="fa fa-pen"></i>
+                    </button>
+                    <button className="btn btn-outline-danger" onClick={handleDelete}>
+                        <i className="fa fa-trash"></i>
+                    </button>
+                </div>
             </div>
-        </li>
-    )
-}
-export default CardContact
+        </div>
+    );
+};
+
+export default CardContact;

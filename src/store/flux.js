@@ -1,20 +1,15 @@
-
-const getState = ({ getStore, getActions, setStore }) => { // setStore updates the store
+const getState = ({ getStore, getActions, setStore }) => {
     return {
         store: {
-            listContacts: [] // creates a space where the data obtained from the API will be stored according to the GET methods, etc.
+            listContacts: []
         },
         actions: {
             createUser: () => {
                 fetch("https://playground.4geeks.com/contact/agendas/4geeks-user", {
-                    method: "POST",
-
+                    method: "POST"
                 })
                     .then((response) => response.json())
-                    .then((data) => {
-                        console.log(data);
-
-                    })
+                    .then((data) => console.log(data))
                     .catch((error) => console.log(error));
             },
 
@@ -23,24 +18,24 @@ const getState = ({ getStore, getActions, setStore }) => { // setStore updates t
                     method: "GET"
                 })
                     .then((response) => {
-                        if (response.status == 404) {
-                            getActions().createUser()
+                        if (response.status === 404) {
+                            getActions().createUser();
                         }
                         if (response.ok) {
-                            return response.json()
+                            return response.json();
                         }
                     })
                     .then((data) => {
                         if (data) {
-                            setStore({ listContacts: data.contacts })
+                            setStore({ listContacts: data.contacts });
                         }
-                    }) // store is an object, and I want to target the contacts state and assign it the value of data.contacts
-                    .catch((error => console.log(error)))
+                    })
+                    .catch((error) => console.log(error));
             },
 
             addContactToList: (contact) => {
                 const store = getStore();
-                setStore({ ...store, listContacts: [...store.listContacts, contact] })
+                setStore({ ...store, listContacts: [...store.listContacts, contact] });
             },
 
             createContact: (payload) => {
@@ -49,30 +44,25 @@ const getState = ({ getStore, getActions, setStore }) => { // setStore updates t
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(
-                        payload
-                    ),
+                    body: JSON.stringify(payload),
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log(data);
-                        const actions = getActions(); 
-                        actions.addContactToList(data); // Adds the contact to the state
-                        console.log("Contact added:", data);
+                        const actions = getActions();
+                        actions.addContactToList(data);
                     })
                     .catch((error) => console.log(error));
             },
+
             deleteContact: (id) => {
                 fetch(`https://playground.4geeks.com/contact/agendas/4geeks-user/contacts/${id}`, {
-                    method: "DELETE",
+                    method: "DELETE"
                 })
                     .then((response) => {
-                        console.log(response)
                         if (response.ok) {
                             const store = getStore();
                             const updatedContacts = store.listContacts.filter(contact => contact.id !== id);
                             setStore({ listContacts: updatedContacts });
-                            console.log(`Contact with ID ${id} deleted`);
                         } else {
                             console.log("Error deleting contact");
                         }
@@ -81,7 +71,6 @@ const getState = ({ getStore, getActions, setStore }) => { // setStore updates t
             },
 
             editContact: (id, contact) => {
-                const store = getStore()
                 fetch(`https://playground.4geeks.com/contact/agendas/4geeks-user/contacts/${id}`, {
                     method: "PUT",
                     headers: {
@@ -91,26 +80,20 @@ const getState = ({ getStore, getActions, setStore }) => { // setStore updates t
                 })
                     .then((response) => {
                         if (response.ok) {
-                            return response.json()
+                            return response.json();
                         }
                     })
                     .then((data) => {
                         if (data) {
-                            const updatedList = store.listContacts.map(contact => {
-                                if (contact.id == id) {
-                                    contact = data
-                                }
-                                return contact
-                            })
-                            setStore({ listContacts: updatedList })
+                            const store = getStore();
+                            const updatedList = store.listContacts.map(c => c.id == id ? data : c);
+                            setStore({ listContacts: updatedList });
                         }
                     })
                     .catch((error) => console.log(error));
-
-
             }
         }
-    }
+    };
 };
 
 export default getState;
