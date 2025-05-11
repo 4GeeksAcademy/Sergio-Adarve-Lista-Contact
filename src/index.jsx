@@ -1,18 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css'; // Estilos globales
-import Layout from "./layout/Layout";  // Importa el layout con el router
-import { StoreProvider } from './hooks/useGlobalReducer';  // Proveedor del estado global
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Layout from "./layout/Layout";
+import { StoreProvider } from "./hooks/useGlobalReducer";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Main = () => {
-    return (
-        <React.StrictMode>
-            <StoreProvider>
-                <Layout /> {/* Ya incluye BrowserRouter internamente */}
-            </StoreProvider>
-        </React.StrictMode>
-    );
+  return (
+    <React.StrictMode>
+      <StoreProvider>
+        <Layout />
+      </StoreProvider>
+    </React.StrictMode>
+  );
 };
 
-// Renderiza el componente principal
-ReactDOM.createRoot(document.getElementById('root')).render(<Main />);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Main />);

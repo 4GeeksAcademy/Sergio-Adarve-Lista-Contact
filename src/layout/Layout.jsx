@@ -1,33 +1,20 @@
+
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Contacts from "../views/Contacts";
+import AddContact from "../views/AddContact";
 
-// Importar las vistas
-import Contacts from "../views/Contacts.jsx";
-import AddContact from "../views/AddContact.jsx";
-import EditContact from "../views/EditContact.jsx";
-
-// Importar el contexto
-import injectContext from "../store/appContext.jsx";
-
-// Crear el componente principal
 const Layout = () => {
-    // Utilizar la variable de entorno VITE_BASENAME si está definida
-    const basename = import.meta.env.VITE_BASENAME || "";
-
-    return (
-        <div>
-            <BrowserRouter basename={basename}>
-                <Routes>
-                    {/* Rutas de la aplicación */}
-                    <Route path="/" element={<Contacts />} />
-                    <Route path="/addContact" element={<AddContact />} />
-                    <Route path="/editContact/:id" element={<EditContact />} />
-                    <Route path="*" element={<h1>Not found!</h1>} />
-                </Routes>
-            </BrowserRouter>
-        </div>
-    );
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Contacts />} /> {/* Página principal */}
+        <Route path="/contacts" element={<Contacts />} />
+        <Route path="/add" element={<AddContact />} />
+        <Route path="*" element={<div className="text-center mt-5">404 - Página no encontrada</div>} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
-// Exportar el Layout con el contexto inyectado
-export default injectContext(Layout);
+export default Layout;

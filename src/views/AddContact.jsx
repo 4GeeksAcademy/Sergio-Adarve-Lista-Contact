@@ -1,85 +1,88 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Context } from "../store/appContext.jsx";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../hooks/useGlobalReducer";
 
 const AddContact = () => {
-    const { store, actions } = useContext(Context);
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const { actions } = useGlobalContext(); // ✅ Este es el contexto correcto
+  const navigate = useNavigate();
 
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [email, setEmail] = useState("");
-    const [address, setAddress] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    avatar: "https://randomuser.me/api/portraits/lego/1.jpg"
+  });
 
-    useEffect(() => {
-        if (id && store.listContacts.length > 0) {
-            const currentContact = store.listContacts.find(c => c.id == id);
-            if (currentContact) {
-                setName(currentContact.name);
-                setPhone(currentContact.phone);
-                setEmail(currentContact.email);
-                setAddress(currentContact.address);
-            }
-        }
-    }, [id, store.listContacts]);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    const guardarContacto = (e) => {
-        e.preventDefault();
-
-        if (!name || !phone || !email || !address) {
-            alert("Please fill in all fields.");
-            return;
-        }
-
-        const payload = {
-            name,
-            phone,
-            email,
-            address,
-            agenda_slug: "4geeks-user"
-        };
-
-        if (id) {
-            actions.editContact(id, payload);
-            alert("Contact updated successfully!");
-        } else {
-            actions.createContact(payload);
-            alert("Contact created successfully!");
-        }
-
-        navigate("/");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newContact = {
+      ...formData,
+      id: Date.now()
     };
+    actions.addContact(newContact);
+    navigate("/contacts");
+  };
 
-    return (
-        <div className="container my-5">
-            <h1 className="text-center">{id ? "Edit Contact" : "Add New Contact"}</h1>
-
-            <form className="container" onSubmit={guardarContacto}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Full Name</label>
-                    <input type="text" className="form-control" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="phone" className="form-label">Phone</label>
-                    <input type="tel" className="form-control" id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="address" className="form-label">Address</label>
-                    <input type="text" className="form-control" id="address" value={address} onChange={(e) => setAddress(e.target.value)} required />
-                </div>
-                <button type="submit" className="btn btn-primary">{id ? "Update" : "Save"}</button>
-            </form>
-
-            <div className="mt-3">
-                <Link to="/" className="btn btn-link">← Back to Contacts</Link>
-            </div>
+  return (
+    <div className="container mt-4">
+      <h2>Add New Contact</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label>Name:</label>
+          <input
+            className="form-control"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
         </div>
-    );
+
+        <div className="mb-3">
+          <label>Email:</label>
+          <input
+            className="form-control"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            type="email"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Phone:</label>
+          <input
+            className="form-control"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Address:</label>
+          <input
+            className="form-control"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button className="btn btn-success" type="submit">
+          Save Contact
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default AddContact;

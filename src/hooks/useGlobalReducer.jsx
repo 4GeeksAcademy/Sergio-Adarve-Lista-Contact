@@ -1,23 +1,47 @@
-import { useContext, useReducer, createContext } from "react";
-import { storeReducer } from "../store/storeReducer";  // Importar el reducer
-import { initialStore } from "../store/initialStore";  // Importar el estado inicial
+import React, { createContext, useContext, useReducer } from "react";
 
-// Crear el contexto para el estado global
-const StoreContext = createContext();
+const GlobalContext = createContext(null);
 
-// Componente proveedor que pasa el estado global y el dispatch a la aplicación
-export function StoreProvider({ children }) {
-    const [store, dispatch] = useReducer(storeReducer, initialStore());  // Usar useReducer con el estado inicial
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "ADD_CONTACT":
+      return { ...state, contacts: [...state.contacts, action.payload] };
+    case "DELETE_CONTACT":
+      return {
+        ...state,
+        contacts: state.contacts.filter(contact => contact.id !== action.payload)
+      };
+    default:
+      return state;
+  }
+};
 
-    return (
-        <StoreContext.Provider value={{ store, dispatch }}>
-            {children}
-        </StoreContext.Provider>
-    );
-}
+const initialState = {
+  contacts: [
+    {
+      id: 1,
+      name: "Mike Anamendolla",
+      address: "5842 Hillcrest Rd",
+      phone: "(870) 288-4149",
+      email: "mike.ana@example.com",
+      avatar: "https://randomuser.me/api/portraits/men/75.jpg"
+    }
+  ]
+};
 
-// Hook personalizado para acceder al estado global y dispatch
-export default function useGlobalReducer() {
-    const { dispatch, store } = useContext(StoreContext);
-    return { dispatch, store };
-}
+export const StoreProvider = ({ children }) => {
+  const [store, dispatch] = useReducer(reducer, initialState);
+
+  const actions = {
+    addContact: (contact) => dispatch({ type: "ADD_CONTACT", payload: contact }),
+    deleteContact: (id) => dispatch({ type: "DELETE_CONTACT", payload: id })
+  };
+
+  return (
+    <GlobalContext.Provider value={{ store, actions }}>
+      {children}
+    </GlobalContext.Provider>
+  );
+};
+
+export const useGlobalContext = () => useContext(GlobalContext);
